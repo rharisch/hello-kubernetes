@@ -1,0 +1,16 @@
+envName: goghvideo
+envSuffix: "" #Should be empty if this is the cluster's main workload namespace
+default:
+  app:
+    project: default
+    destination:
+      namespace: demo-app
+      server: https://kubernetes.default.svc
+    source:
+      targetRevision: HEAD
+
+applications:
+  notification:
+    enabled: true
+    enableAutoSync: true
+    cdEnabled: false

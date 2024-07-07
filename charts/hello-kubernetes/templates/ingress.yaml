@@ -1,0 +1,31 @@
+{{- if (default .Values.ingress.configured true) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.hostname }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    {{- if (.Values.ingress.certManagerIssuer) }}
+    cert-manager.io/issuer: {{ .Values.ingress.certManagerIssuer }}
+    {{- end }}
+  name: {{ include "hello-kubernetes.name" . }}
+spec:
+  ingressClassName: nginx
+  {{- if (.Values.ingress.certManagerIssuer) }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.hostname }}
+      secretName: {{ include "hello-kubernetes.name" . }}-tls
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.hostname }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ include "hello-kubernetes.name" . }}
+            port:
+              number: {{ .Values.service.port }}
+        path: /
+        pathType: Prefix
+{{- end }}

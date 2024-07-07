@@ -1,0 +1,40 @@
+# your override should supply an envName
+envName: null
+envSuffix: null
+
+# if set, override all Applications to use this project
+projectOverride: null
+
+
+default:
+  app:
+    metadata:
+      namespace: argocd
+    enableAutoSync: null
+    autoSyncPrune: true
+    destination:
+      namespace: null
+      server: null
+    project: default
+    source:
+      chart: null
+      repoURL: https://github.com/0penshifty/demo_app.git
+      targetRevision: HEAD
+
+      extraSourceFields: |
+        helm:
+          valueFiles:
+          - values.yaml
+
+applications:
+  notification:
+    enableAutoSync: true
+    autoSyncPrune: true
+    destination:
+      namespace: null
+      server: null
+    project: default
+    source:
+      path: /
+      repoURL: null
+      targetRevision: HEAD
