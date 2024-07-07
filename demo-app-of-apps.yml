@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: demo-applications
+  name: hello-kubernetes
   namespace: argocd
 spec:
   destination:
@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     path: applications
-    repoURL: https://github.com/0penshifty/demo-app.git
+    repoURL: https://github.com/0penshifty/demo_app.git
     targetRevision: HEAD
     helm:
       valueFiles:

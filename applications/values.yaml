@@ -27,7 +27,7 @@ default:
           - values.yaml
 
 applications:
-  notification:
+  hello-kubernetes:
     enableAutoSync: true
     autoSyncPrune: true
     destination:

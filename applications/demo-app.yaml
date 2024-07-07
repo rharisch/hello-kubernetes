@@ -10,7 +10,7 @@ default:
       targetRevision: HEAD
 
 applications:
-  notification:
+  hello-kubernetes:
     enabled: true
     enableAutoSync: true
     cdEnabled: false
