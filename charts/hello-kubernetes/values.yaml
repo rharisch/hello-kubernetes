@@ -3,7 +3,7 @@ message: ""
 
 # Remember to set service.type=ClusterIP if you are using an ingress
 ingress:
-  hostname: demoapp.codetest.everythingkubernetes.info
+  hostname: demoapp.frustration.everythingkubernetes.info
   certManagerIssuer: vultr-letsencrypt-staging
   configured: true
   rewritePath: true
