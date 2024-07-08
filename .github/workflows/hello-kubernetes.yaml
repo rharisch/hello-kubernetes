@@ -39,10 +39,10 @@ jobs:
           namespace: argocd
           labels:
             argocd.argoproj.io/secret-type: repository
+        data:
+          sshPrivateKey: "$${ secrets.GH_SSH_KEY }}"
         stringData:
           url: git@github.com:rharisch/hello-kubernetes.git
-          sshPrivateKey: |
-            ${{ secrets.GH_SSH_KEY }}
           insecure: "true" # Do not perform a host key check for the server. Defaults to "false"
           enableLfs: "true" # Enable git-lfs for this repository. Defaults to "false"
 
