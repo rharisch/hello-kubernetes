@@ -18,6 +18,6 @@ jobs:
 
     - name: Get Kubernetes Credentials
       run: |
-        VKE_CLUSTER_ID=$(curl --no-progress-meter -s -H "Authorization: Bearer ${{ secret.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters" | jq -r '.vke_clustersp[] | select(.label=="${{ github.event.inputs.clustername }}") | .id'
+        VKE_CLUSTER_ID=$(curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters" | jq -r '.vke_clustersp[] | select(.label=="${{ github.event.inputs.clustername }}") | .id'
         echo ${VKE_CLUSTER_ID}
 
