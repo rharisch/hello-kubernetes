@@ -1,0 +1,28 @@
+name: Deploy Hello-Kubernetes app
+
+on:
+  workflow_dispatch:
+    inputs:
+      clustername:
+        description: 'Cluster Name'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install vultr-cli
+      uses: techknowlogick/action-vultr@v2
+      with:
+        token: ${{ secrets.VULTR_API_KEY }}
+
+    - name: Get Kubernetes Credentials
+      run: |
+        VKE_CLUSTER_ID=$(curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters" | jq -r '.vke_clustersp[] | select(.label=="${{ github.event.inputs.clustername }}") | .id')
+        echo ${VKE_CLUSTER_ID}
+
