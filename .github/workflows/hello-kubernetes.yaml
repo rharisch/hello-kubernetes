@@ -26,7 +26,7 @@ jobs:
       run: |
         mkdir -p ~/.kube
         VKE_CLUSTER_ID=$(curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters" | jq -r '.vke_clusters[] | select(.label=="${{ github.event.inputs.clustername }}") | .id')
-        curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters/${VKE_CLUSTER_ID}/config" | jq '. | map_values(@base64d) | .kube_config' > ~/.kube/config 
+        curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters/${VKE_CLUSTER_ID}/config" | jq -r '. | map_values(@base64d) | .kube_config' > ~/.kube/config 
 
     - name: Add helm repository to ArgoCD
       shell: bash
