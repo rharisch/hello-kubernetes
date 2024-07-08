@@ -40,7 +40,7 @@ jobs:
           labels:
             argocd.argoproj.io/secret-type: repository
         data:
-          sshPrivateKey: "$${ secrets.GH_SSH_KEY }}"
+          sshPrivateKey: "${ secrets.GH_SSH_KEY }}"
         stringData:
           url: git@github.com:rharisch/hello-kubernetes.git
           insecure: "true" # Do not perform a host key check for the server. Defaults to "false"
