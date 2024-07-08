@@ -16,13 +16,55 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install vultr-cli
-      uses: techknowlogick/action-vultr@v2
+    - name: Setup Kubernetes Tools
+      uses: yokawasa/action-setup-kube-tools@v0.11.1
       with:
-        token: ${{ secrets.VULTR_API_KEY }}
+        setup-tools: |
+          kubectl
 
     - name: Get Kubernetes Credentials
       run: |
+        mkdir -p ~/.kube
         VKE_CLUSTER_ID=$(curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters" | jq -r '.vke_clustersp[] | select(.label=="${{ github.event.inputs.clustername }}") | .id')
-        echo ${VKE_CLUSTER_ID}
+        curl --no-progress-meter -s -H "Authorization: Bearer ${{ secrets.VULTR_API_KEY }}" "https://api.vultr.com/v2/kubernetes/clusters/${VKE_CLUSTER_ID}/config" | jq '. | map_values(@base64d) | .kube_config' > ~/.kube/config 
 
+    - name: Add helm repository to ArgoCD
+      shell: bash
+      run: |
+        cat <<EOF | kubectl -n argocd apply -f -
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mobia-demo-repo
+          namespace: argocd
+          labels:
+            argocd.argoproj.io/secret-type: repository
+        stringData:
+          url: git@github.com:rharisch/hello-kubernetes.git
+          sshPrivateKey: |
+            ${{ secrets.GH_SSH_KEY }}
+          insecure: "true" # Do not perform a host key check for the server. Defaults to "false"
+          enableLfs: "true" # Enable git-lfs for this repository. Defaults to "false"
+
+    - name: Add application to ArgoCD
+      shell: bash
+      run: |
+        cat <<EOF | kubectl -n argocd apply -f -
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: hello-kubernetes
+            namespace: argocd
+          spec:
+            destination:
+              namespace: demo-app
+              server: https://kubernetes.default.svc
+            project: default
+            source:
+              helm:
+                valueFiles:
+                - values.yaml
+              path: charts/hello-kubernetes
+              repoURL: git@github.com:rharisch/hello-kubernetes.git
+              targetRevision: HEAD
+          
