@@ -4,7 +4,7 @@ message: ""
 # Remember to set service.type=ClusterIP if you are using an ingress
 ingress:
   hostname: demoapp.mobia.everythingkubernetes.info
-  certManagerIssuer: vultr-letsencrypt-staging
+  certManagerIssuer: vultr-letsencrypt-prod
   configured: true
   rewritePath: true
   pathPrefix: ""
